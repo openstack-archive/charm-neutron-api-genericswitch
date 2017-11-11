@@ -1,0 +1,8 @@
+payload/*
+.tox
+bin
+.testrepository
+*.sw[nop]
+*.pyc
+interfaces
+build
