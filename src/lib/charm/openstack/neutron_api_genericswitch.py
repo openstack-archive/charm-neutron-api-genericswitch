@@ -40,20 +40,25 @@ def choose_charm_class():
     return ch_utils.os_release('neutron-common')
 
 
-class IcehouseNeutronAPIODLCharm(charms_openstack.charm.OpenStackCharm):
+class NewtonNeutronAPIGenericSwitchCharm(charms_openstack.charm.OpenStackCharm):
+    name = 'neutron-api-genericswitch'
 
-    name = 'neutron-api-odl'
-    release = 'icehouse'
+    release = 'newton'
 
-    packages = ['neutron-common', 'neutron-plugin-ml2']
-
-    required_relations = ['neutron-plugin-api-subordinate', 'odl-controller']
+    packages = ['neutron-common',
+                'neutron-plugin-ml2',
+                'nginx-light',
+                ]
+    required_relations = ['neutron-plugin-api-subordinate']
 
     restart_map = {ML2_CONF: []}
     adapters_class = charms_openstack.adapters.OpenStackRelationAdapters
 
     # Custom configure for the class
-    service_plugins = 'router,firewall,lbaas,vpnaas,metering'
+    # NOTE: LBaaS v2 for >= newton
+    service_plugins = ('router,firewall,vpnaas,metering,'
+                       'neutron_lbaas.services.loadbalancer.'
+                       'plugin.LoadBalancerPluginv2')
 
     def configure_plugin(self, api_principle):
         """Add sections and tuples to insert values into neutron-server's
@@ -71,33 +76,9 @@ class IcehouseNeutronAPIODLCharm(charms_openstack.charm.OpenStackCharm):
         }
 
         api_principle.configure_plugin(
-            neutron_plugin='odl',
+            neutron_plugin='genericswitch',
             core_plugin='neutron.plugins.ml2.plugin.Ml2Plugin',
             neutron_plugin_config='/etc/neutron/plugins/ml2/ml2_conf.ini',
             service_plugins=self.service_plugins,
             subordinate_configuration=inject_config)
 
-
-class KiloNeutronAPIODLCharm(IcehouseNeutronAPIODLCharm):
-    """For the kilo release we have an additional package to install:
-    'python-networking-odl'
-    """
-
-    release = 'kilo'
-
-    packages = ['neutron-common',
-                'neutron-plugin-ml2',
-                'python-networking-odl',
-                ]
-
-
-class NewtonNeutronAPIODLCharm(KiloNeutronAPIODLCharm):
-    """For Newton, the service_plugins on the configuration is different.
-    """
-
-    release = 'newton'
-
-    # NOTE: LBaaS v2 for >= newton
-    service_plugins = ('router,firewall,vpnaas,metering,'
-                       'neutron_lbaas.services.loadbalancer.'
-                       'plugin.LoadBalancerPluginv2')

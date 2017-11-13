@@ -1,6 +1,6 @@
-name: neutron-api-odl
+name: neutron-api-genericswitch
 subordinate: true
-summary: OpenStack Networking - OpenDayLight mechanism driver
+summary: OpenStack Networking - Generic Switch mechanism driver
 maintainer: OpenStack Charmers <openstack-charmers@lists.ubuntu.com>
 description: |
   Neutron is a virtual network service for OpenStack, and a part of
@@ -12,22 +12,17 @@ description: |
   advanced network capabilities (e.g., QoS, ACLs, network monitoring,
   etc.)
   .
-  This charm configures the neutron-api service with the OpenDayLight
-  SDN solution.
+  This charm configures the neutron-api service with the Generic Switch
+  mechanism driver.
 tags:
   - openstack
 series:
   - xenial
-  - artful
-  - zesty
-  - trusty
 provides:
   neutron-plugin-api-subordinate:
     interface: neutron-plugin-api-subordinate
     scope: container
 requires:
-  odl-controller:
-    interface: odl-controller-api
   container:
     interface: juju-info
     scope: container
