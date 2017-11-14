@@ -27,7 +27,7 @@ requires:
     interface: juju-info
     scope: container
 resources:
-  package:
+  genericswitch-ml2-config:
     type: file
-    filename: neutron-api-genericswitch.deb
-    description: Packaged version of the networking-generic-switch python package
+    filename: ml2_conf_genericswitch.ini
+    description: Configuration file for generic switch devices.

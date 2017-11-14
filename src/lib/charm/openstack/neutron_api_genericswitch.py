@@ -11,10 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import shutil
 
 import charms_openstack.adapters
 import charms_openstack.charm
 import charmhelpers.contrib.openstack.utils as ch_utils
+from charmhelpers.contrib.python.packages import pip_install
 from charmhelpers.core import hookenv
 from charmhelpers.core.hookenv import config
 
@@ -52,22 +54,17 @@ class NewtonNeutronAPIGenericSwitchCharm(charms_openstack.charm.OpenStackCharm):
     restart_map = {ML2_CONF: []}
     adapters_class = charms_openstack.adapters.OpenStackRelationAdapters
 
-    # Custom configure for the class
-    # NOTE: LBaaS v2 for >= newton
+    genericswitch_config = '/etc/neutron/plugins/ml2/ml2_conf_genericswitch.ini'
+
     service_plugins = ('router,firewall,vpnaas,metering,'
                        'neutron_lbaas.services.loadbalancer.'
                        'plugin.LoadBalancerPluginv2')
 
     def install(self):
-        # TODO(mmitchell): support modes other than deb-resource.
-        if config('install-source') == 'deb-resource':
-            hookenv.log('Installing deb from resource file.')
-            package_path = hookenv.resource_get(name='package')
+        config_path = hookenv.resource_get('genericswitch-ml2-config')
+        shutil.copy(config_path, self.genericswitch_config)
 
-            # NOTE(mmitchell): This puts the full package path as a package to install.
-            #                  Should be enough to get to the point where apt will install it.
-            self.packages = [package_path]
-
+        pip_install(config('pip-requirement-line'))
         super().install()
 
     def configure_plugin(self, api_principle):

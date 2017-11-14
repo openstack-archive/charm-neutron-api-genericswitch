@@ -1,18 +1,5 @@
 options:
-  install-source:
+  pip-requirement-line:
     type: string
-    default: "deb-resource"
-    description: |
-      Installation source for package. Valid options are:
-      .
-        deb-resource
-        deb
-        pip
-      .
-      deb-resource means the debian package as a provided resource.
-      deb is package provided by an official (or preconfigured) repository.
-      pip is installation directly from pip.
-  deb-package-name:
-    type: string
-    default: "networking-generic-switch"
-    description: Debian package name. For installation with "deb" install source.
+    default: "networking-generic-switch==0.4.0"
+    description: Pip requirement line.
