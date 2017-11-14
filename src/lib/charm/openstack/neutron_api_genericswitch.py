@@ -79,6 +79,13 @@ class NewtonNeutronAPIGenericSwitchCharm(charms_openstack.charm.OpenStackCharm):
                         'DEFAULT': [
                         ],
                     }
+                },
+                "/etc/neutron/plugins/ml2/ml2_conf.ini": {
+                    "sections": {
+                        'ml2': [
+                            ('mechanism_drivers', 'openvswitch,hyperv,genericswitch')
+                        ]
+                    }
                 }
             }
         }

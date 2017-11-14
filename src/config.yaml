@@ -2,4 +2,4 @@ options:
   pip-requirement-line:
     type: string
     default: "networking-generic-switch==0.4.0"
-    description: Pip requirement line.
+    description: Pip requirement line. This configuration option is only read on initial installation.
