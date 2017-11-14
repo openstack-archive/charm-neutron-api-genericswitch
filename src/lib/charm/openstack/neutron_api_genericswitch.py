@@ -15,7 +15,8 @@
 import charms_openstack.adapters
 import charms_openstack.charm
 import charmhelpers.contrib.openstack.utils as ch_utils
-
+from charmhelpers.core import hookenv
+from charmhelpers.core.hookenv import config
 
 ML2_CONF = '/etc/neutron/plugins/ml2/ml2_conf.ini'
 VLAN = 'vlan'
@@ -45,10 +46,7 @@ class NewtonNeutronAPIGenericSwitchCharm(charms_openstack.charm.OpenStackCharm):
 
     release = 'newton'
 
-    packages = ['neutron-common',
-                'neutron-plugin-ml2',
-                'nginx-light',
-                ]
+    packages = []
     required_relations = ['neutron-plugin-api-subordinate']
 
     restart_map = {ML2_CONF: []}
@@ -59,6 +57,18 @@ class NewtonNeutronAPIGenericSwitchCharm(charms_openstack.charm.OpenStackCharm):
     service_plugins = ('router,firewall,vpnaas,metering,'
                        'neutron_lbaas.services.loadbalancer.'
                        'plugin.LoadBalancerPluginv2')
+
+    def install(self):
+        # TODO(mmitchell): support modes other than deb-resource.
+        if config('install-source') == 'deb-resource':
+            hookenv.log('Installing deb from resource file.')
+            package_path = hookenv.resource_get(name='package')
+
+            # NOTE(mmitchell): This puts the full package path as a package to install.
+            #                  Should be enough to get to the point where apt will install it.
+            self.packages = [package_path]
+
+        super().install()
 
     def configure_plugin(self, api_principle):
         """Add sections and tuples to insert values into neutron-server's

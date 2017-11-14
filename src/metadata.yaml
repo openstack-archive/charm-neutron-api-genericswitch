@@ -26,3 +26,8 @@ requires:
   container:
     interface: juju-info
     scope: container
+resources:
+  package:
+    type: file
+    filename: neutron-api-genericswitch.deb
+    description: Packaged version of the networking-generic-switch python package

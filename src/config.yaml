@@ -1,21 +1,18 @@
 options:
-  vlan-ranges:
+  install-source:
     type: string
-    default: "physnet1:1000:2000"
+    default: "deb-resource"
     description: |
-      Space-delimited list of Neutron network-provider & vlan-id-ranges using
-      the following format "<provider>:<start>:<end> ...".
-  overlay-network-type:
-    default: gre
+      Installation source for package. Valid options are:
+      .
+        deb-resource
+        deb
+        pip
+      .
+      deb-resource means the debian package as a provided resource.
+      deb is package provided by an official (or preconfigured) repository.
+      pip is installation directly from pip.
+  deb-package-name:
     type: string
-    description: |
-      Overlay network types to use, valid options include:
-      .
-        gre
-        vxlan
-      .
-      Multiple types can be provided - field is space delimited.
-  security-groups:
-    default: false
-    type: boolean
-    description: Enable OpenDayLight managed security groups.
+    default: "networking-generic-switch"
+    description: Debian package name. For installation with "deb" install source.
