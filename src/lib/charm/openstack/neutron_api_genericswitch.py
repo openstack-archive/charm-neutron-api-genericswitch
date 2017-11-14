@@ -62,10 +62,15 @@ class NewtonNeutronAPIGenericSwitchCharm(charms_openstack.charm.OpenStackCharm):
                        'plugin.LoadBalancerPluginv2')
 
     def install(self):
+        hookenv.log('Installing deb from resource file.')
+        package_path = hookenv.resource_get(name='package')
+
         config_path = hookenv.resource_get('genericswitch-ml2-config')
         shutil.copy(config_path, self.genericswitch_config)
 
-        pip_install(config('pip-requirement-line'))
+        # NOTE(mmitchell): This puts the full package path as a package to install.
+        self.packages.append(package_path)
+
         super().install()
 
     def configure_plugin(self, api_principle):
@@ -77,14 +82,8 @@ class NewtonNeutronAPIGenericSwitchCharm(charms_openstack.charm.OpenStackCharm):
                 "/etc/neutron/neutron.conf": {
                     "sections": {
                         'DEFAULT': [
+                            ('hello', 'world')
                         ],
-                    }
-                },
-                "/etc/neutron/plugins/ml2/ml2_conf.ini": {
-                    "sections": {
-                        'ml2': [
-                            ('mechanism_drivers', 'openvswitch,hyperv,genericswitch')
-                        ]
                     }
                 }
             }

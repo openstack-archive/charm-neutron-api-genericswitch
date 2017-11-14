@@ -31,3 +31,7 @@ resources:
     type: file
     filename: ml2_conf_genericswitch.ini
     description: Configuration file for generic switch devices.
+  package:
+    type: file
+    filename: neutron-api-genericswitch.deb
+    description: Packaged version of the networking-generic-switch python package
