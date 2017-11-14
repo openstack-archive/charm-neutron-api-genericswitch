@@ -48,7 +48,8 @@ class NewtonNeutronAPIGenericSwitchCharm(charms_openstack.charm.OpenStackCharm):
 
     release = 'newton'
 
-    packages = []
+    packages = ['neutron-common',
+                'neutron-plugin-ml2']
     required_relations = ['neutron-plugin-api-subordinate']
 
     restart_map = {ML2_CONF: []}
