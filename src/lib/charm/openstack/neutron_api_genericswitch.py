@@ -13,12 +13,10 @@
 # limitations under the License.
 import shutil
 
+import charmhelpers.contrib.openstack.utils as ch_utils
 import charms_openstack.adapters
 import charms_openstack.charm
-import charmhelpers.contrib.openstack.utils as ch_utils
-from charmhelpers.contrib.python.packages import pip_install
 from charmhelpers.core import hookenv
-from charmhelpers.core.hookenv import config
 
 ML2_CONF = '/etc/neutron/plugins/ml2/ml2_conf.ini'
 VLAN = 'vlan'
