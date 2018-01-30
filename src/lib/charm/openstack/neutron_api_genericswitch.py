@@ -58,6 +58,10 @@ class NewtonNeutronAPIGenericSwitchCharm(
 
         super().install()
 
+    def upgrade_charm(self):
+        self.install()
+        super().upgrade_charm()
+
     def configure_plugin(self, api_principle):
         """Add sections and tuples to insert values into neutron-server's
         neutron.conf
