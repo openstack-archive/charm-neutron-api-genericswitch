@@ -17,13 +17,13 @@ from __future__ import print_function
 
 import mock
 
-import reactive.neutron_api_odl_handlers as handlers
+import reactive.neutron_api_genericswitch_handlers as handlers
+import charm.openstack.neutron_api_genericswitch as neutron_api_genericswitch
 
 import charms_openstack.test_utils as test_utils
 
 
 class TestRegisteredHooks(test_utils.TestRegisteredHooks):
-
     def test_hooks(self):
         defaults = [
             'charm.installed',
@@ -31,8 +31,6 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
             'update-status']
         hook_set = {
             'when': {
-                'render_config': (
-                    'odl-controller.available',),
                 'configure_plugin': (
                     'neutron-plugin-api-subordinate.connected',),
                 'remote_restart': (
@@ -40,7 +38,7 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
             },
             'when_file_changed': {
                 'remote_restart': (
-                    '/etc/neutron/plugins/ml2/ml2_conf.ini',),
+                    neutron_api_genericswitch.ML2_CONF,),
             },
         }
         # test that the hooks were registered via the
@@ -49,26 +47,14 @@ class TestRegisteredHooks(test_utils.TestRegisteredHooks):
 
 
 class TestHandlers(test_utils.PatchHelper):
-
-    def test_render_config(self):
-        napi_odl_charm = mock.MagicMock()
-        self.patch_object(handlers.charm, 'provide_charm_instance',
-                          new=mock.MagicMock())
-        self.provide_charm_instance().__enter__.return_value = napi_odl_charm
-
-        handlers.render_config('arg1')
-        napi_odl_charm.render_with_interfaces.assert_called_once_with(
-            ('arg1',))
-        napi_odl_charm.assess_status.assert_called_once_with()
-
     def test_configure_plugin(self):
-        napi_odl_charm = mock.MagicMock()
+        napi_gs_charm = mock.MagicMock()
         self.patch_object(handlers.charm, 'provide_charm_instance',
                           new=mock.MagicMock())
-        self.provide_charm_instance().__enter__.return_value = napi_odl_charm
+        self.provide_charm_instance().__enter__.return_value = napi_gs_charm
 
         handlers.configure_plugin('arg1')
-        napi_odl_charm.configure_plugin.assert_called_once_with('arg1')
+        napi_gs_charm.configure_plugin.assert_called_once_with('arg1')
 
     def test_remote_restart(self):
         principle_interface = mock.MagicMock()

@@ -19,20 +19,6 @@ import charms_openstack.charm
 from charmhelpers.core import hookenv
 
 ML2_CONF = '/etc/neutron/plugins/ml2/ml2_conf.ini'
-VLAN = 'vlan'
-VXLAN = 'vxlan'
-GRE = 'gre'
-OVERLAY_NET_TYPES = [VXLAN, GRE]
-
-
-@charms_openstack.adapters.config_property
-def overlay_net_types(config):
-    overlay_networks = config.overlay_network_type.split()
-    for overlay_net in overlay_networks:
-        if overlay_net not in OVERLAY_NET_TYPES:
-            raise ValueError(
-                'Unsupported overlay-network-type {}'.format(overlay_net))
-    return ','.join(overlay_networks)
 
 
 @charms_openstack.charm.register_os_release_selector
@@ -41,7 +27,8 @@ def choose_charm_class():
     return ch_utils.os_release('neutron-common')
 
 
-class NewtonNeutronAPIGenericSwitchCharm(charms_openstack.charm.OpenStackCharm):
+class NewtonNeutronAPIGenericSwitchCharm(
+        charms_openstack.charm.OpenStackCharm):
     name = 'neutron-api-genericswitch'
 
     release = 'newton'
@@ -53,7 +40,8 @@ class NewtonNeutronAPIGenericSwitchCharm(charms_openstack.charm.OpenStackCharm):
     restart_map = {ML2_CONF: []}
     adapters_class = charms_openstack.adapters.OpenStackRelationAdapters
 
-    genericswitch_config = '/etc/neutron/plugins/ml2/ml2_conf_genericswitch.ini'
+    genericswitch_config = \
+        '/etc/neutron/plugins/ml2/ml2_conf_genericswitch.ini'
 
     service_plugins = ('router,firewall,vpnaas,metering,'
                        'neutron_lbaas.services.loadbalancer.'
@@ -66,7 +54,6 @@ class NewtonNeutronAPIGenericSwitchCharm(charms_openstack.charm.OpenStackCharm):
         config_path = hookenv.resource_get('genericswitch-ml2-config')
         shutil.copy(config_path, self.genericswitch_config)
 
-        # NOTE(mmitchell): This puts the full package path as a package to install.
         self.packages.append(package_path)
 
         super().install()
@@ -79,9 +66,7 @@ class NewtonNeutronAPIGenericSwitchCharm(charms_openstack.charm.OpenStackCharm):
             "neutron-api": {
                 "/etc/neutron/neutron.conf": {
                     "sections": {
-                        'DEFAULT': [
-                            ('hello', 'world')
-                        ],
+                        'DEFAULT': [],
                     }
                 }
             }
@@ -93,4 +78,3 @@ class NewtonNeutronAPIGenericSwitchCharm(charms_openstack.charm.OpenStackCharm):
             neutron_plugin_config='/etc/neutron/plugins/ml2/ml2_conf.ini',
             service_plugins=self.service_plugins,
             subordinate_configuration=inject_config)
-
