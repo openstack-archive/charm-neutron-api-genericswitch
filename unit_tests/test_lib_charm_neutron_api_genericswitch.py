@@ -47,3 +47,31 @@ class TestNeutronAPIGenericSwitchCharm(test_utils.PatchHelper):
                              'neutron_lbaas.services.loadbalancer.'
                              'plugin.LoadBalancerPluginv2'),
             subordinate_configuration=config_dict)
+
+
+class TestNeutronAPIGenericSwitchCharmOnQueens(test_utils.PatchHelper):
+    def test_all_packages(self):
+        self.patch_object(neutron_api_genericswitch.ch_utils, 'os_release')
+        self.os_release.return_value = 'queens'
+        c = neutron_api_genericswitch.NewtonNeutronAPIGenericSwitchCharm()
+        self.assertEqual(
+            c.all_packages,
+            ['neutron-common', 'neutron-plugin-ml2'])
+
+    def test_configure_plugin(self):
+        principle_interface = mock.MagicMock()
+        self.patch_object(neutron_api_genericswitch.ch_utils, 'os_release')
+        self.os_release.return_value = 'queens'
+        c = neutron_api_genericswitch.NewtonNeutronAPIGenericSwitchCharm()
+        c.configure_plugin(principle_interface)
+        config_dict = {
+            'neutron-api': {
+                '/etc/neutron/neutron.conf': {'sections': {'DEFAULT': []}}}}
+        principle_interface.configure_plugin.assert_called_once_with(
+            neutron_plugin='genericswitch',
+            core_plugin='neutron.plugins.ml2.plugin.Ml2Plugin',
+            neutron_plugin_config='/etc/neutron/plugins/ml2/ml2_conf.ini',
+            service_plugins=('router,firewall,vpnaas,metering,'
+                             'neutron_lbaas.services.loadbalancer.'
+                             'plugin.LoadBalancerPluginv2'),
+            subordinate_configuration=config_dict)
