@@ -82,3 +82,8 @@ class NewtonNeutronAPIGenericSwitchCharm(
             neutron_plugin_config='/etc/neutron/plugins/ml2/ml2_conf.ini',
             service_plugins=self.service_plugins,
             subordinate_configuration=inject_config)
+
+
+class QueensNeutronAPIGenericSwitchCharm(
+        NewtonNeutronAPIGenericSwitchCharm):
+    release = 'queens'
