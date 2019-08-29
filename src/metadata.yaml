@@ -18,6 +18,7 @@ tags:
   - openstack
 series:
   - xenial
+  - bionic
 provides:
   neutron-plugin-api-subordinate:
     interface: neutron-plugin-api-subordinate

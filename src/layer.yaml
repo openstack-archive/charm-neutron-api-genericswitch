@@ -1,4 +1,5 @@
 includes: ['layer:openstack', 'interface:neutron-plugin-api-subordinate']
+repo: 'https://opendev.org/openstack/charm-neutron-api-genericswitch'
 options:
   basic:
     use_venv: True
